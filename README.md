@@ -1,4 +1,4 @@
-# pterodactyl-installer
+# pterodactyl-installer FR
 
 Scripts non officiels pour l'installation de Pterodactyl Panel & Wings. Fonctionne avec la dernière version de Pterodactyl !
 
