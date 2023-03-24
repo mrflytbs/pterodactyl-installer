@@ -6,25 +6,25 @@ set -e
 #                                                                                    #
 # Project 'pterodactyl-installer'                                                    #
 #                                                                                    #
-# Copyright (C) 2018 - 2023, Vilhelm Prytz, <vilhelm@prytznet.se>                    #
+# Copyright (C) 2023, MrFlytb, <mr.flytb@gmail.com>                                  #
 #                                                                                    #
-#   This program is free software: you can redistribute it and/or modify             #
-#   it under the terms of the GNU General Public License as published by             #
-#   the Free Software Foundation, either version 3 of the License, or                #
-#   (at your option) any later version.                                              #
+#   Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le        #
+#   modifier sous les termes de la licence publique générale GNU telle que publiée   #
+#   par la Free Software Foundation, soit la version 3 de la Licence, soit           #
+#   (à votre choix) toute version ultérieure.                                        #
 #                                                                                    #
-#   This program is distributed in the hope that it will be useful,                  #
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of                   #
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #
-#   GNU General Public License for more details.                                     #
+#   Ce programme est distribué dans l'espoir qu'il sera utile,                       #
+#   mais SANS AUCUNE GARANTIE ; sans même la garantie implicite de                   #
+#   QUALITÉ MARCHANDE ou ADAPTATION À UN USAGE PARTICULIER. Voir le                  #
+#   Licence publique générale GNU pour plus de détails.                              #
 #                                                                                    #
-#   You should have received a copy of the GNU General Public License                #
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>.           #
+#   Vous devriez avoir reçu une copie de la licence publique générale GNU            #
+#   avec ce programme. Sinon, consultez <https://www.gnu.org/licenses/>.             #
 #                                                                                    #
-# https://github.com/pterodactyl-installer/pterodactyl-installer/blob/master/LICENSE #
+# https://github.com/mrflytbs/pterodactyl-installer/blob/main/LICENSE                #
 #                                                                                    #
-# This script is not associated with the official Pterodactyl Project.               #
-# https://github.com/pterodactyl-installer/pterodactyl-installer                     #
+# Ce script n'est pas associé au projet officiel Pterodactyl.                        #
+# https://github.com/mrflytbs/pterodactyl-installer                                  #
 #                                                                                    #
 ######################################################################################
 
@@ -33,7 +33,7 @@ fn_exists() { declare -F "$1" >/dev/null; }
 if ! fn_exists lib_loaded; then
   # shellcheck source=lib/lib.sh
   source /tmp/lib.sh || source <(curl -sSL "$GITHUB_BASE_URL/$GITHUB_SOURCE"/lib/lib.sh)
-  ! fn_exists lib_loaded && echo "* ERROR: Could not load lib script" && exit 1
+  ! fn_exists lib_loaded && echo "* ERREUR : Impossible de charger le script lib" && exit 1
 fi
 
 # ------------------ Variables ----------------- #
@@ -65,45 +65,45 @@ user_lastname="${user_lastname:-}"
 user_password="${user_password:-}"
 
 if [[ -z "${email}" ]]; then
-  error "Email is required"
+  error "L'e-mail est requis"
   exit 1
 fi
 
 if [[ -z "${user_email}" ]]; then
-  error "User email is required"
+  error "L'adresse e-mail de l'utilisateur est requise"
   exit 1
 fi
 
 if [[ -z "${user_username}" ]]; then
-  error "User username is required"
+  error "Le nom d'utilisateur de l'utilisateur est requis"
   exit 1
 fi
 
 if [[ -z "${user_firstname}" ]]; then
-  error "User firstname is required"
+  error "Le prénom de l'utilisateur est requis"
   exit 1
 fi
 
 if [[ -z "${user_lastname}" ]]; then
-  error "User lastname is required"
+  error "Le nom de famille de l'utilisateur est requis"
   exit 1
 fi
 
 if [[ -z "${user_password}" ]]; then
-  error "User password is required"
+  error "Le mot de passe utilisateur est requis"
   exit 1
 fi
 
 # --------- Main installation functions -------- #
 
 install_composer() {
-  output "Installing composer.."
+  output "Installation du compositeur.."
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-  success "Composer installed!"
+  success "Compositeur installé !"
 }
 
 ptdl_dl() {
-  output "Downloading pterodactyl panel files .. "
+  output "Téléchargement des fichiers du panel ptérodactyl .. "
   mkdir -p /var/www/pterodactyl
   cd /var/www/pterodactyl || exit
 
@@ -113,14 +113,14 @@ ptdl_dl() {
 
   cp .env.example .env
 
-  success "Downloaded pterodactyl panel files!"
+  success "Fichiers de panel de ptérodactyl téléchargés !"
 }
 
 install_composer_deps() {
-  output "Installing composer dependencies.."
+  output "Installation des dépendances du compositeur.."
   [ "$OS" == "rocky" ] || [ "$OS" == "almalinux" ] && export PATH=/usr/local/bin:$PATH
   COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
-  success "Installed composer dependencies!"
+  success "Dépendances de compositeur installées !"
 }
 
 # Configure environment
@@ -167,7 +167,7 @@ configure() {
     --password="$user_password" \
     --admin=1
 
-  success "Configured environment!"
+  success "Environnement configuré !"
 }
 
 # set the correct folder permissions depending on OS and webserver
@@ -184,18 +184,18 @@ set_folder_permissions() {
 }
 
 insert_cronjob() {
-  output "Installing cronjob.. "
+  output "Installation de cronjob.. "
 
   crontab -l | {
     cat
     output "* * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1"
   } | crontab -
 
-  success "Cronjob installed!"
+  success "Cronjob installé !"
 }
 
 install_pteroq() {
-  output "Installing pteroq service.."
+  output "Installation du service pteroq.."
 
   curl -o /etc/systemd/system/pteroq.service "$GITHUB_URL"/configs/pteroq.service
 
@@ -211,7 +211,7 @@ install_pteroq() {
   systemctl enable pteroq.service
   systemctl start pteroq
 
-  success "Installed pteroq!"
+  success "Pteroq installé !"
 }
 
 # -------- OS specific install functions ------- #
@@ -279,7 +279,7 @@ alma_rocky_dep() {
 }
 
 dep_install() {
-  output "Installing dependencies for $OS $OS_VER..."
+  output "Installation des dépendances pour $OS $OS_VER..."
 
   # Update repos before installing
   update_repos
@@ -327,31 +327,31 @@ dep_install() {
 
   enable_services
 
-  success "Dependencies installed!"
+  success "Dépendances installées !"
 }
 
 # --------------- Other functions -------------- #
 
 firewall_ports() {
-  output "Opening ports: 22 (SSH), 80 (HTTP) and 443 (HTTPS)"
+  output "Ouverture des ports: 22 (SSH), 80 (HTTP) et 443 (HTTPS)"
 
   firewall_allow_ports "22 80 443"
 
-  success "Firewall ports opened!"
+  success "Ports du pare-feu ouverts !"
 }
 
 letsencrypt() {
   FAILED=false
 
-  output "Configuring Let's Encrypt..."
+  output "Configuration de Let's Encrypt..."
 
   # Obtain certificate
   certbot --nginx --redirect --no-eff-email --email "$email" -d "$FQDN" || FAILED=true
 
   # Check if it succeded
   if [ ! -d "/etc/letsencrypt/live/$FQDN/" ] || [ "$FAILED" == true ]; then
-    warning "The process of obtaining a Let's Encrypt certificate failed!"
-    echo -n "* Still assume SSL? (y/N): "
+    warning "Le processus d'obtention d'un certificat Let's Encrypt a échoué !"
+    echo -n "* Vous supposez toujours SSL ? (y/N): "
     read -r CONFIGURE_SSL
 
     if [[ "$CONFIGURE_SSL" =~ [Yy] ]]; then
@@ -363,14 +363,14 @@ letsencrypt() {
       CONFIGURE_LETSENCRYPT=false
     fi
   else
-    success "The process of obtaining a Let's Encrypt certificate succeeded!"
+    success "Le processus d'obtention d'un certificat Let's Encrypt a réussi !"
   fi
 }
 
 # ------ Webserver configuration functions ----- #
 
 configure_nginx() {
-  output "Configuring nginx .."
+  output "Configuration de nginx .."
 
   if [ "$ASSUME_SSL" == true ] && [ "$CONFIGURE_LETSENCRYPT" == false ]; then
     DL_FILE="nginx_ssl.conf"
@@ -409,13 +409,13 @@ configure_nginx() {
     systemctl restart nginx
   fi
 
-  success "Nginx configured!"
+  success "Nginx configuré !"
 }
 
 # --------------- Main functions --------------- #
 
 perform_install() {
-  output "Starting installation.. this might take a while!"
+  output "Démarrage de l'installation... cela peut prendre un certain temps !"
   dep_install
   install_composer
   ptdl_dl

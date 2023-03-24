@@ -33,7 +33,7 @@ fn_exists() { declare -F "$1" >/dev/null; }
 if ! fn_exists lib_loaded; then
   # shellcheck source=lib/lib.sh
   source /tmp/lib.sh || source <(curl -sSL "$GITHUB_BASE_URL/$GITHUB_SOURCE"/lib/lib.sh)
-  ! fn_exists lib_loaded && echo "* ERROR: Could not load lib script" && exit 1
+  ! fn_exists lib_loaded && echo "* ERREUR : Impossible de charger le script lib" && exit 1
 fi
 
 # ------------------ Variables ----------------- #
@@ -56,7 +56,7 @@ MYSQL_DBHOST_USER="${MYSQL_DBHOST_USER:-pterodactyluser}"
 MYSQL_DBHOST_PASSWORD="${MYSQL_DBHOST_PASSWORD:-}"
 
 if [[ $CONFIGURE_DBHOST == true && -z "${MYSQL_DBHOST_PASSWORD}" ]]; then
-  error "Mysql database host user password is required"
+  error "Le mot de passe de l'utilisateur de l'hôte de la base de données MySQL est requis"
   exit 1
 fi
 
@@ -70,7 +70,7 @@ enable_services() {
 }
 
 dep_install() {
-  output "Installing dependencies for $OS $OS_VER..."
+  output "Installation des dépendances pour $OS $OS_VER..."
 
   [ "$CONFIGURE_FIREWALL" == true ] && install_firewall && firewall_ports
 
@@ -110,45 +110,45 @@ dep_install() {
 
   enable_services
 
-  success "Dependencies installed!"
+  success "Dépendances installées !"
 }
 
 ptdl_dl() {
-  echo "* Downloading Pterodactyl Wings.. "
+  echo "* Téléchargement des ailes de ptérodactyle.."
 
   mkdir -p /etc/pterodactyl
   curl -L -o /usr/local/bin/wings "$WINGS_DL_BASE_URL$ARCH"
 
   chmod u+x /usr/local/bin/wings
 
-  success "Pterodactyl Wings downloaded successfully"
+  success "Pterodactyl Wings téléchargé avec succès"
 }
 
 systemd_file() {
-  output "Installing systemd service.."
+  output "Installation du service systemd.."
 
   curl -o /etc/systemd/system/wings.service "$GITHUB_URL"/configs/wings.service
   systemctl daemon-reload
   systemctl enable wings
 
-  success "Installed systemd service!"
+  success "Service systemd installé !"
 }
 
 firewall_ports() {
-  output "Opening port 22 (SSH), 8080 (Wings Port), 2022 (Wings SFTP Port)"
+  output "Ouverture des port : 22 (SSH), 8080 (Wings Port), 2022 (Wings SFTP Port)"
 
   [ "$CONFIGURE_LETSENCRYPT" == true ] && firewall_allow_ports "80 443"
   [ "$CONFIGURE_DB_FIREWALL" == true ] && firewall_allow_ports "3306"
 
   firewall_allow_ports "22 8080 2022"
 
-  success "Firewall ports opened!"
+  success "Ports du pare-feu ouverts !"
 }
 
 letsencrypt() {
   FAILED=false
 
-  output "Configuring LetsEncrypt.."
+  output "Configuration de LetsEncrypt.."
 
   # If user has nginx
   systemctl stop nginx || true
@@ -160,20 +160,20 @@ letsencrypt() {
 
   # Check if it succeded
   if [ ! -d "/etc/letsencrypt/live/$FQDN/" ] || [ "$FAILED" == true ]; then
-    warning "The process of obtaining a Let's Encrypt certificate failed!"
+    warning "Le processus d'obtention d'un certificat Let's Encrypt a échoué !"
   else
-    success "The process of obtaining a Let's Encrypt certificate succeeded!"
+    success "Le processus d'obtention d'un certificat Let's Encrypt a réussi !"
   fi
 }
 
 configure_mysql() {
-  output "Configuring MySQL.."
+  output "Configuration de MySQL.."
 
   create_db_user "$MYSQL_DBHOST_USER" "$MYSQL_DBHOST_PASSWORD" "$MYSQL_DBHOST_HOST"
   grant_all_privileges "*" "$MYSQL_DBHOST_USER" "$MYSQL_DBHOST_HOST"
 
   if [ "$MYSQL_DBHOST_HOST" != "127.0.0.1" ]; then
-    echo "* Changing MySQL bind address.."
+    echo "* Modification de l'adresse de liaison MySQL.."
 
     case "$OS" in
     debian | ubuntu)
@@ -187,13 +187,13 @@ configure_mysql() {
     systemctl restart mysqld
   fi
 
-  success "MySQL configured!"
+  success "MySQL configuré !"
 }
 
 # --------------- Main functions --------------- #
 
 perform_install() {
-  output "Installing pterodactyl wings.."
+  output "Installation de wings de ptérodactyle.."
   dep_install
   ptdl_dl
   systemd_file
