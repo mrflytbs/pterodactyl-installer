@@ -6,38 +6,38 @@ set -e
 #                                                                                    #
 # Project 'pterodactyl-installer'                                                    #
 #                                                                                    #
-# Copyright (C) 2018 - 2023, Vilhelm Prytz, <vilhelm@prytznet.se>                    #
+# Copyright (C) 2023, MrFlytb, <mr.flytb@gmail.com>                                  #
 #                                                                                    #
-#   This program is free software: you can redistribute it and/or modify             #
-#   it under the terms of the GNU General Public License as published by             #
-#   the Free Software Foundation, either version 3 of the License, or                #
-#   (at your option) any later version.                                              #
+#   Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le        #
+#   modifier sous les termes de la licence publique générale GNU telle que publiée   #
+#   par la Free Software Foundation, soit la version 3 de la Licence, soit           #
+#   (à votre choix) toute version ultérieure.                                        #
 #                                                                                    #
-#   This program is distributed in the hope that it will be useful,                  #
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of                   #
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #
-#   GNU General Public License for more details.                                     #
+#   Ce programme est distribué dans l'espoir qu'il sera utile,                       #
+#   mais SANS AUCUNE GARANTIE ; sans même la garantie implicite de                   #
+#   QUALITÉ MARCHANDE ou ADAPTATION À UN USAGE PARTICULIER. Voir le                  #
+#   Licence publique générale GNU pour plus de détails.                              #
 #                                                                                    #
-#   You should have received a copy of the GNU General Public License                #
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>.           #
+#   Vous devriez avoir reçu une copie de la licence publique générale GNU            #
+#   avec ce programme. Sinon, consultez <https://www.gnu.org/licenses/>.             #
 #                                                                                    #
-# https://github.com/pterodactyl-installer/pterodactyl-installer/blob/master/LICENSE #
+# https://github.com/mrflytbs/pterodactyl-installer/blob/main/LICENSE                #
 #                                                                                    #
-# This script is not associated with the official Pterodactyl Project.               #
-# https://github.com/pterodactyl-installer/pterodactyl-installer                     #
+# Ce script n'est pas associé au projet officiel Pterodactyl.                        #
+# https://github.com/mrflytbs/pterodactyl-installer                                  #
 #                                                                                    #
 ######################################################################################
 
-export GITHUB_SOURCE="v0.12.3"
-export SCRIPT_RELEASE="v0.12.3"
-export GITHUB_BASE_URL="https://raw.githubusercontent.com/pterodactyl-installer/pterodactyl-installer"
+export GITHUB_SOURCE="main"
+export SCRIPT_RELEASE="main"
+export GITHUB_BASE_URL="https://raw.githubusercontent.com/mrflytbs/pterodactyl-installer"
 
 LOG_PATH="/var/log/pterodactyl-installer.log"
 
 # check for curl
 if ! [ -x "$(command -v curl)" ]; then
-  echo "* curl is required in order for this script to work."
-  echo "* install using apt (Debian and derivatives) or yum/dnf (CentOS)"
+  echo "* curl est requis pour que ce script fonctionne."
+  echo "* installer en utilisant apt (Debian et dérivés) ou yum/dnf (CentOS)"
   exit 1
 fi
 
@@ -55,31 +55,31 @@ execute() {
   run_ui "${1//_canary/}" |& tee -a $LOG_PATH
 
   if [[ -n $2 ]]; then
-    echo -e -n "* Installation of $1 completed. Do you want to proceed to $2 installation? (y/N): "
+    echo -e -n "* Installation de $1 complété. Voulez-vous passer à $2 installation? (y/N): "
     read -r CONFIRM
     if [[ "$CONFIRM" =~ [Yy] ]]; then
       execute "$2"
     else
-      error "Installation of $2 aborted."
+      error "Installation de $2 annulé."
       exit 1
     fi
   fi
 }
 
-welcome ""
+welcome "TRTESTETS"
 
 done=false
 while [ "$done" == false ]; do
   options=(
-    "Install the panel"
-    "Install Wings"
-    "Install both [0] and [1] on the same machine (wings script runs after panel)"
+    "Installer le panel"
+    "Installer Wings"
+    "Installez les deux [0] et [1] sur la même machine (le script Wings se lancera apres le Panel)"
     # "Uninstall panel or wings\n"
 
-    "Install panel with canary version of the script (the versions that lives in master, may be broken!)"
-    "Install Wings with canary version of the script (the versions that lives in master, may be broken!)"
-    "Install both [3] and [4] on the same machine (wings script runs after panel)"
-    "Uninstall panel or wings with canary version of the script (the versions that lives in master, may be broken!)"
+    # "Install panel with canary version of the script (the versions that lives in master, may be broken!)"
+    # "Install Wings with canary version of the script (the versions that lives in master, may be broken!)"
+    # "Install both [3] and [4] on the same machine (wings script runs after panel)"
+    # "Uninstall panel or wings with canary version of the script (the versions that lives in master, may be broken!)"
   )
 
   actions=(
@@ -88,13 +88,13 @@ while [ "$done" == false ]; do
     "panel;wings"
     # "uninstall"
 
-    "panel_canary"
-    "wings_canary"
-    "panel_canary;wings_canary"
-    "uninstall_canary"
+    # "panel_canary"
+    # "wings_canary"
+    # "panel_canary;wings_canary"
+    # "uninstall_canary"
   )
 
-  output "What would you like to do?"
+  output "Qu'est-ce que tu aimerais faire?"
 
   for i in "${!options[@]}"; do
     output "[$i] ${options[$i]}"
@@ -103,10 +103,10 @@ while [ "$done" == false ]; do
   echo -n "* Input 0-$((${#actions[@]} - 1)): "
   read -r action
 
-  [ -z "$action" ] && error "Input is required" && continue
+  [ -z "$action" ] && error "Une entrée est requise" && continue
 
   valid_input=("$(for ((i = 0; i <= ${#actions[@]} - 1; i += 1)); do echo "${i}"; done)")
-  [[ ! " ${valid_input[*]} " =~ ${action} ]] && error "Invalid option"
+  [[ ! " ${valid_input[*]} " =~ ${action} ]] && error "Option invalide"
   [[ " ${valid_input[*]} " =~ ${action} ]] && done=true && IFS=";" read -r i1 i2 <<<"${actions[$action]}" && execute "$i1" "$i2"
 done
 
