@@ -6,25 +6,25 @@ set -e
 #                                                                                    #
 # Project 'pterodactyl-installer'                                                    #
 #                                                                                    #
-# Copyright (C) 2018 - 2023, Vilhelm Prytz, <vilhelm@prytznet.se>                    #
+# Copyright (C) 2023, MrFlytb, <mr.flytb@gmail.com>                                  #
 #                                                                                    #
-#   This program is free software: you can redistribute it and/or modify             #
-#   it under the terms of the GNU General Public License as published by             #
-#   the Free Software Foundation, either version 3 of the License, or                #
-#   (at your option) any later version.                                              #
+#   Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le        #
+#   modifier sous les termes de la licence publique générale GNU telle que publiée   #
+#   par la Free Software Foundation, soit la version 3 de la Licence, soit           #
+#   (à votre choix) toute version ultérieure.                                        #
 #                                                                                    #
-#   This program is distributed in the hope that it will be useful,                  #
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of                   #
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #
-#   GNU General Public License for more details.                                     #
+#   Ce programme est distribué dans l'espoir qu'il sera utile,                       #
+#   mais SANS AUCUNE GARANTIE ; sans même la garantie implicite de                   #
+#   QUALITÉ MARCHANDE ou ADAPTATION À UN USAGE PARTICULIER. Voir le                  #
+#   Licence publique générale GNU pour plus de détails.                              #
 #                                                                                    #
-#   You should have received a copy of the GNU General Public License                #
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>.           #
+#   Vous devriez avoir reçu une copie de la licence publique générale GNU            #
+#   avec ce programme. Sinon, consultez <https://www.gnu.org/licenses/>.             #
 #                                                                                    #
-# https://github.com/pterodactyl-installer/pterodactyl-installer/blob/master/LICENSE #
+# https://github.com/mrflytbs/pterodactyl-installer/blob/main/LICENSE                #
 #                                                                                    #
-# This script is not associated with the official Pterodactyl Project.               #
-# https://github.com/pterodactyl-installer/pterodactyl-installer                     #
+# Ce script n'est pas associé au projet officiel Pterodactyl.                        #
+# https://github.com/mrflytbs/pterodactyl-installer                                  #
 #                                                                                    #
 ######################################################################################
 

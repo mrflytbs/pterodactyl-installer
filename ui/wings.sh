@@ -6,25 +6,25 @@ set -e
 #                                                                                    #
 # Project 'pterodactyl-installer'                                                    #
 #                                                                                    #
-# Copyright (C) 2018 - 2023, Vilhelm Prytz, <vilhelm@prytznet.se>                    #
+# Copyright (C) 2023, MrFlytb, <mr.flytb@gmail.com>                                  #
 #                                                                                    #
-#   This program is free software: you can redistribute it and/or modify             #
-#   it under the terms of the GNU General Public License as published by             #
-#   the Free Software Foundation, either version 3 of the License, or                #
-#   (at your option) any later version.                                              #
+#   Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le        #
+#   modifier sous les termes de la licence publique générale GNU telle que publiée   #
+#   par la Free Software Foundation, soit la version 3 de la Licence, soit           #
+#   (à votre choix) toute version ultérieure.                                        #
 #                                                                                    #
-#   This program is distributed in the hope that it will be useful,                  #
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of                   #
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #
-#   GNU General Public License for more details.                                     #
+#   Ce programme est distribué dans l'espoir qu'il sera utile,                       #
+#   mais SANS AUCUNE GARANTIE ; sans même la garantie implicite de                   #
+#   QUALITÉ MARCHANDE ou ADAPTATION À UN USAGE PARTICULIER. Voir le                  #
+#   Licence publique générale GNU pour plus de détails.                              #
 #                                                                                    #
-#   You should have received a copy of the GNU General Public License                #
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>.           #
+#   Vous devriez avoir reçu une copie de la licence publique générale GNU            #
+#   avec ce programme. Sinon, consultez <https://www.gnu.org/licenses/>.             #
 #                                                                                    #
-# https://github.com/pterodactyl-installer/pterodactyl-installer/blob/master/LICENSE #
+# https://github.com/mrflytbs/pterodactyl-installer/blob/main/LICENSE                #
 #                                                                                    #
-# This script is not associated with the official Pterodactyl Project.               #
-# https://github.com/pterodactyl-installer/pterodactyl-installer                     #
+# Ce script n'est pas associé au projet officiel Pterodactyl.                        #
+# https://github.com/mrflytbs/pterodactyl-installer                                  #
 #                                                                                    #
 ######################################################################################
 
@@ -33,7 +33,7 @@ fn_exists() { declare -F "$1" >/dev/null; }
 if ! fn_exists lib_loaded; then
   # shellcheck source=lib/lib.sh
   source /tmp/lib.sh || source <(curl -sSL "$GITHUB_BASE_URL/$GITHUB_SOURCE"/lib/lib.sh)
-  ! fn_exists lib_loaded && echo "* ERROR: Could not load lib script" && exit 1
+  ! fn_exists lib_loaded && echo "* ERREUR : Impossible de charger le script lib" && exit 1
 fi
 
 # ------------------ Variables ----------------- #
@@ -60,12 +60,12 @@ export MYSQL_DBHOST_PASSWORD=""
 
 ask_letsencrypt() {
   if [ "$CONFIGURE_UFW" == false ] && [ "$CONFIGURE_FIREWALL_CMD" == false ]; then
-    warning "Let's Encrypt requires port 80/443 to be opened! You have opted out of the automatic firewall configuration; use this at your own risk (if port 80/443 is closed, the script will fail)!"
+    warning "Let's Encrypt nécessite l'ouverture du port 80/443 ! Vous avez désactivé la configuration automatique du pare-feu ; utilisez-le à vos risques et périls (si le port 80/443 est fermé, le script échouera) !"
   fi
 
-  warning "You cannot use Let's Encrypt with your hostname as an IP address! It must be a FQDN (e.g. node.example.org)."
+  warning "Vous ne pouvez pas utiliser Let's Encrypt avec votre nom d'hôte comme adresse IP ! Il doit s'agir d'un nom de domaine complet (par exemple, node.ygaming.fr)."
 
-  echo -e -n "* Do you want to automatically configure HTTPS using Let's Encrypt? (y/N): "
+  echo -e -n "* Voulez-vous configurer automatiquement HTTPS à l'aide de Let's Encrypt ? (y/N): "
   read -r CONFIRM_SSL
 
   if [[ "$CONFIRM_SSL" =~ [Yy] ]]; then
@@ -74,7 +74,7 @@ ask_letsencrypt() {
 }
 
 ask_database_user() {
-  echo -n "* Do you want to automatically configure a user for database hosts? (y/N): "
+  echo -n "* Voulez-vous configurer automatiquement un utilisateur pour les hôtes de base de données ? (y/N): "
   read -r CONFIRM_DBHOST
 
   if [[ "$CONFIRM_DBHOST" =~ [Yy] ]]; then
@@ -84,11 +84,11 @@ ask_database_user() {
 }
 
 ask_database_external() {
-  echo -n "* Do you want to configure MySQL to be accessed externally? (y/N): "
+  echo -n "* Voulez-vous configurer MySQL pour qu'il soit accessible en externe ? (y/N): "
   read -r CONFIRM_DBEXTERNAL
 
   if [[ "$CONFIRM_DBEXTERNAL" =~ [Yy] ]]; then
-    echo -n "* Enter the panel address (blank for any address): "
+    echo -n "* Entrez l'adresse du panel (vide pour toute adresse): "
     read -r CONFIRM_DBEXTERNAL_HOST
     if [ "$CONFIRM_DBEXTERNAL_HOST" == "" ]; then
       MYSQL_DBHOST_HOST="%"
@@ -101,8 +101,8 @@ ask_database_external() {
 }
 
 ask_database_firewall() {
-  warning "Allow incoming traffic to port 3306 (MySQL) can potentially be a security risk, unless you know what you are doing!"
-  echo -n "* Would you like to allow incoming traffic to port 3306? (y/N): "
+  warning "Autoriser le trafic entrant sur le port 3306 (MySQL) peut potentiellement constituer un risque pour la sécurité, à moins que vous ne sachiez ce que vous faites !"
+  echo -n "* Souhaitez-vous autoriser le trafic entrant sur le port 3306 ? (y/N): "
   read -r CONFIRM_DB_FIREWALL
   if [[ "$CONFIRM_DB_FIREWALL" =~ [Yy] ]]; then
     CONFIGURE_DB_FIREWALL=true
@@ -116,11 +116,11 @@ ask_database_firewall() {
 main() {
   # check if we can detect an already existing installation
   if [ -d "/etc/pterodactyl" ]; then
-    warning "The script has detected that you already have Pterodactyl wings on your system! You cannot run the script multiple times, it will fail!"
-    echo -e -n "* Are you sure you want to proceed? (y/N): "
+    warning "Le script a détecté que vous avez déjà des ailes de Ptérodactyle sur votre système ! Vous ne pouvez pas exécuter le script plusieurs fois, il échouera !"
+    echo -e -n "* Êtes-vous sur de vouloir continuer? (y/N): "
     read -r CONFIRM_PROCEED
     if [[ ! "$CONFIRM_PROCEED" =~ [Yy] ]]; then
-      error "Installation aborted!"
+      error "Installation interrompue !"
       exit 1
     fi
   fi
@@ -130,14 +130,14 @@ main() {
   check_virt
 
   echo "* "
-  echo "* The installer will install Docker, required dependencies for Wings"
-  echo "* as well as Wings itself. But it's still required to create the node"
-  echo "* on the panel and then place the configuration file on the node manually after"
-  echo "* the installation has finished. Read more about this process on the"
-  echo "* official documentation: $(hyperlink 'https://pterodactyl.io/wings/1.0/installing.html#configure')"
+  echo "* Le programme d'installation installera Docker, les dépendances requises pour Wings"
+  echo "* ainsi que Wings lui-même. Mais il est toujours nécessaire de créer le nœud"
+  echo "* sur le panneau, puis placez manuellement le fichier de configuration sur le nœud après"
+  echo "* l'installation est terminée. En savoir plus sur ce processus sur le"
+  echo "* documents officiels: $(hyperlink 'https://pterodactyl.io/wings/1.0/installing.html#configure')"
   echo "* "
-  echo -e "* ${COLOR_RED}Note${COLOR_NC}: this script will not start Wings automatically (will install systemd service, not start it)."
-  echo -e "* ${COLOR_RED}Note${COLOR_NC}: this script will not enable swap (for docker)."
+  echo -e "* ${COLOR_RED}Note${COLOR_NC}: ce script ne démarrera pas Wings automatiquement (installera le service systemd, ne le démarrera pas)."
+  echo -e "* ${COLOR_RED}Note${COLOR_NC}: ce script n'activera pas l'échange (pour docker)."
   print_brake 42
 
   ask_firewall CONFIGURE_FIREWALL
@@ -153,28 +153,28 @@ main() {
 
     MYSQL_DBHOST_USER="-"
     while [[ "$MYSQL_DBHOST_USER" == *"-"* ]]; do
-      required_input MYSQL_DBHOST_USER "Database host username (pterodactyluser): " "" "pterodactyluser"
-      [[ "$MYSQL_DBHOST_USER" == *"-"* ]] && error "Database user cannot contain hyphens"
+      required_input MYSQL_DBHOST_USER "Nom d'utilisateur de l'hôte de la base de données (pterodactyluser) : " "" "pterodactyluser"
+      [[ "$MYSQL_DBHOST_USER" == *"-"* ]] && error "L'utilisateur de la base de données ne peut pas contenir de tirets"
     done
 
-    password_input MYSQL_DBHOST_PASSWORD "Database host password: " "Password cannot be empty"
+    password_input MYSQL_DBHOST_PASSWORD "Mot de passe de l'hôte de la base de données : " "Le mot de passe ne peut pas être vide"
   fi
 
   ask_letsencrypt
 
   if [ "$CONFIGURE_LETSENCRYPT" == true ]; then
     while [ -z "$FQDN" ]; do
-      echo -n "* Set the FQDN to use for Let's Encrypt (node.example.com): "
+      echo -n "* Définissez le nom de domaine complet à utiliser pour Let's Encrypt (node.ygaming.fr) : "
       read -r FQDN
 
       ASK=false
 
-      [ -z "$FQDN" ] && error "FQDN cannot be empty"                                                            # check if FQDN is empty
+      [ -z "$FQDN" ] && error "Le FQDN ne peut pas être vide"                                                            # check if FQDN is empty
       bash <(curl -s "$GITHUB_URL"/lib/verify-fqdn.sh) "$FQDN" || ASK=true                                      # check if FQDN is valid
-      [ -d "/etc/letsencrypt/live/$FQDN/" ] && error "A certificate with this FQDN already exists!" && ASK=true # check if cert exists
+      [ -d "/etc/letsencrypt/live/$FQDN/" ] && error "Un certificat avec ce FQDN existe déjà !" && ASK=true # check if cert exists
 
       [ "$ASK" == true ] && FQDN=""
-      [ "$ASK" == true ] && echo -e -n "* Do you still want to automatically configure HTTPS using Let's Encrypt? (y/N): "
+      [ "$ASK" == true ] && echo -e -n "* Souhaitez-vous toujours configurer automatiquement HTTPS à l'aide de Let's Encrypt ? (y/N): "
       [ "$ASK" == true ] && read -r CONFIRM_SSL
 
       if [[ ! "$CONFIRM_SSL" =~ [Yy] ]] && [ "$ASK" == true ]; then
@@ -187,20 +187,20 @@ main() {
   if [ "$CONFIGURE_LETSENCRYPT" == true ]; then
     # set EMAIL
     while ! valid_email "$EMAIL"; do
-      echo -n "* Enter email address for Let's Encrypt: "
+      echo -n "* Entrez l'adresse e-mail pour Let's Encrypt: "
       read -r EMAIL
 
-      valid_email "$EMAIL" || error "Email cannot be empty or invalid"
+      valid_email "$EMAIL" || error "L'e-mail ne peut pas être vide ou invalide"
     done
   fi
 
-  echo -n "* Proceed with installation? (y/N): "
+  echo -n "* Continuer l'installation ? (y/N): "
 
   read -r CONFIRM
   if [[ "$CONFIRM" =~ [Yy] ]]; then
     run_installer "wings"
   else
-    error "Installation aborted."
+    error "Installation interrompue."
     exit 1
   fi
 }
@@ -208,24 +208,24 @@ main() {
 function goodbye {
   echo ""
   print_brake 70
-  echo "* Wings installation completed"
+  echo "* Installation de wings terminée"
   echo "*"
-  echo "* To continue, you need to configure Wings to run with your panel"
-  echo "* Please refer to the official guide, $(hyperlink 'https://pterodactyl.io/wings/1.0/installing.html#configure')"
+  echo "* Pour continuer, vous devez configurer Wings pour qu'il fonctionne avec votre panneau"
+  echo "* Veuillez vous référer au guide officiel, $(hyperlink 'https://pterodactyl.io/wings/1.0/installing.html#configure')"
   echo "* "
-  echo "* You can either copy the configuration file from the panel manually to /etc/pterodactyl/config.yml"
-  echo "* or, you can use the \"auto deploy\" button from the panel and simply paste the command in this terminal"
+  echo "* Vous pouvez soit copier manuellement le fichier de configuration du panneau vers /etc/pterodactyl/config.yml"
+  echo "* ou, vous pouvez utiliser le bouton \"déploiement automatique\" du panneau et simplement coller la commande dans ce terminal"
   echo "* "
-  echo "* You can then start Wings manually to verify that it's working"
+  echo "* Vous pouvez ensuite démarrer Wings manuellement pour vérifier qu'il fonctionne"
   echo "*"
   echo "* sudo wings"
   echo "*"
-  echo "* Once you have verified that it is working, use CTRL+C and then start Wings as a service (runs in the background)"
+  echo "* Une fois que vous avez vérifié que cela fonctionne, utilisez CTRL + C puis démarrez Wings en tant que service (s'exécute en arrière-plan)"
   echo "*"
   echo "* systemctl start wings"
   echo "*"
-  echo -e "* ${COLOR_RED}Note${COLOR_NC}: It is recommended to enable swap (for Docker, read more about it in official documentation)."
-  [ "$CONFIGURE_FIREWALL" == false ] && echo -e "* ${COLOR_RED}Note${COLOR_NC}: If you haven't configured your firewall, ports 8080 and 2022 needs to be open."
+  echo -e "* ${COLOR_RED}Note${COLOR_NC}: Il est recommandé d'activer le swap (pour Docker, en savoir plus à ce sujet dans la documentation officielle)."
+  [ "$CONFIGURE_FIREWALL" == false ] && echo -e "* ${COLOR_RED}Note${COLOR_NC}: Si vous n'avez pas configuré votre pare-feu, les ports 8080 et 2022 doivent être ouverts."
   print_brake 70
   echo ""
 }
