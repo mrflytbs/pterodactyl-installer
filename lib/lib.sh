@@ -6,25 +6,25 @@ set -e
 #                                                                                    #
 # Project 'pterodactyl-installer'                                                    #
 #                                                                                    #
-# Copyright (C) 2018 - 2023, Vilhelm Prytz, <vilhelm@prytznet.se>                    #
+# Copyright (C) 2023, MrFlytb, <mr.flytb@gmail.com>                                  #
 #                                                                                    #
-#   This program is free software: you can redistribute it and/or modify             #
-#   it under the terms of the GNU General Public License as published by             #
-#   the Free Software Foundation, either version 3 of the License, or                #
-#   (at your option) any later version.                                              #
+#   Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le        #
+#   modifier sous les termes de la licence publique générale GNU telle que publiée   #
+#   par la Free Software Foundation, soit la version 3 de la Licence, soit           #
+#   (à votre choix) toute version ultérieure.                                        #
 #                                                                                    #
-#   This program is distributed in the hope that it will be useful,                  #
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of                   #
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #
-#   GNU General Public License for more details.                                     #
+#   Ce programme est distribué dans l'espoir qu'il sera utile,                       #
+#   mais SANS AUCUNE GARANTIE ; sans même la garantie implicite de                   #
+#   QUALITÉ MARCHANDE ou ADAPTATION À UN USAGE PARTICULIER. Voir le                  #
+#   Licence publique générale GNU pour plus de détails.                              #
 #                                                                                    #
-#   You should have received a copy of the GNU General Public License                #
-#   along with this program.  If not, see <https://www.gnu.org/licenses/>.           #
+#   Vous devriez avoir reçu une copie de la licence publique générale GNU            #
+#   avec ce programme. Sinon, consultez <https://www.gnu.org/licenses/>.             #
 #                                                                                    #
-# https://github.com/pterodactyl-installer/pterodactyl-installer/blob/master/LICENSE #
+# https://github.com/mrflytbs/pterodactyl-installer/blob/main/LICENSE                #
 #                                                                                    #
-# This script is not associated with the official Pterodactyl Project.               #
-# https://github.com/pterodactyl-installer/pterodactyl-installer                     #
+# Ce script n'est pas associé au projet officiel Pterodactyl.                        #
+# https://github.com/mrflytbs/pterodactyl-installer                                  #
 #                                                                                    #
 ######################################################################################
 
@@ -52,7 +52,7 @@ export SUPPORTED=false
 export PANEL_DL_URL="https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz"
 export WINGS_DL_BASE_URL="https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_"
 export MARIADB_URL="https://downloads.mariadb.com/MariaDB/mariadb_repo_setup"
-export GITHUB_BASE_URL=${GITHUB_BASE_URL:-"https://raw.githubusercontent.com/pterodactyl-installer/pterodactyl-installer"}
+export GITHUB_BASE_URL=${GITHUB_BASE_URL:-"https://raw.githubusercontent.com/mrflytbs/pterodactyl-installer"}
 export GITHUB_URL="$GITHUB_BASE_URL/$GITHUB_SOURCE"
 
 # Colors
@@ -122,18 +122,18 @@ welcome() {
   get_latest_versions
 
   print_brake 70
-  output "Pterodactyl panel installation script @ $SCRIPT_RELEASE"
+  output "Script d'installation du panneau Ptérodactyl @ $SCRIPT_RELEASE"
   output ""
-  output "Copyright (C) 2018 - 2023, Vilhelm Prytz, <vilhelm@prytznet.se>"
-  output "https://github.com/pterodactyl-installer/pterodactyl-installer"
+  output "Copyright (C) 2023, MrFlytb, <mr.flytb@gmail.com"
+  output "https://github.com/mrflytbs/pterodactyl-installer"
   output ""
-  output "This script is not associated with the official Pterodactyl Project."
+  output "Ce script n'est pas associé au projet officiel Pterodactyl."
   output ""
   output "Running $OS version $OS_VER."
   if [ "$1" == "panel" ]; then
-    output "Latest pterodactyl/panel is $PTERODACTYL_PANEL_VERSION"
+    output "Le dernier ptérodactyl/panel est $PTERODACTYL_PANEL_VERSION"
   elif [ "$1" == "wings" ]; then
-    output "Latest pterodactyl/wings is $PTERODACTYL_WINGS_VERSION"
+    output "Dernier ptérodactyl/wings is $PTERODACTYL_WINGS_VERSION"
   fi
   print_brake 70
 }
@@ -147,7 +147,7 @@ get_latest_release() {
 }
 
 get_latest_versions() {
-  output "Retrieving release information..."
+  output "Récupération des informations sur la version..."
   PTERODACTYL_PANEL_VERSION=$(get_latest_release "pterodactyl/panel")
   PTERODACTYL_WINGS_VERSION=$(get_latest_release "pterodactyl/wings")
 }
@@ -200,12 +200,12 @@ create_db_user() {
   local db_user_password="$2"
   local db_host="${3:-127.0.0.1}"
 
-  output "Creating database user $db_user_name..."
+  output "Création d'un utilisateur de base de données $db_user_name..."
 
   mysql -u root -e "CREATE USER '$db_user_name'@'$db_host' IDENTIFIED BY '$db_user_password';"
   mysql -u root -e "FLUSH PRIVILEGES;"
 
-  output "Database user $db_user_name created"
+  output "Utilisateur de la base de données $db_user_name créé"
 }
 
 grant_all_privileges() {
@@ -213,12 +213,12 @@ grant_all_privileges() {
   local db_user_name="$2"
   local db_host="${3:-127.0.0.1}"
 
-  output "Granting all privileges on $db_name to $db_user_name..."
+  output "Accorder tous les privilèges sur $db_name a $db_user_name..."
 
   mysql -u root -e "GRANT ALL PRIVILEGES ON $db_name.* TO '$db_user_name'@'$db_host' WITH GRANT OPTION;"
   mysql -u root -e "FLUSH PRIVILEGES;"
 
-  output "Privileges granted"
+  output "Privilèges accordés"
 
 }
 
@@ -349,7 +349,7 @@ ask_firewall() {
 
   case "$OS" in
   ubuntu | debian)
-    echo -e -n "* Do you want to automatically configure UFW (firewall)? (y/N): "
+    echo -e -n "* Voulez-vous configurer automatiquement UFW (pare-feu)? (y/N): "
     read -r CONFIRM_UFW
 
     if [[ "$CONFIRM_UFW" =~ [Yy] ]]; then
@@ -357,7 +357,7 @@ ask_firewall() {
     fi
     ;;
   rocky | almalinux)
-    echo -e -n "* Do you want to automatically configure firewall-cmd (firewall)? (y/N): "
+    echo -e -n "* Voulez-vous configurer automatiquement firewall-cmd (pare-feu)? (y/N): "
     read -r CONFIRM_FIREWALL_CMD
 
     if [[ "$CONFIRM_FIREWALL_CMD" =~ [Yy] ]]; then
@@ -371,7 +371,7 @@ install_firewall() {
   case "$OS" in
   ubuntu | debian)
     output ""
-    output "Installing Uncomplicated Firewall (UFW)"
+    output "Installation d'un pare-feu simple (UFW)"
 
     if ! [ -x "$(command -v ufw)" ]; then
       update_repos true
@@ -380,7 +380,7 @@ install_firewall() {
 
     ufw --force enable
 
-    success "Enabled Uncomplicated Firewall (UFW)"
+    success "Pare-feu simple activé (UFW)"
 
     ;;
   rocky | almalinux)
@@ -422,14 +422,14 @@ firewall_allow_ports() {
 # panel x86_64 check
 check_os_x86_64() {
   if [ "${ARCH}" != "amd64" ]; then
-    warning "Detected CPU architecture $CPU_ARCHITECTURE"
-    warning "Using any other architecture than 64 bit (x86_64) will cause problems."
+    warning "Architecture CPU détectée $CPU_ARCHITECTURE"
+    warning "L'utilisation de toute autre architecture que 64 bits (x86_64) causera des problèmes."
 
-    echo -e -n "* Are you sure you want to proceed? (y/N):"
+    echo -e -n "* Êtes-vous sur de vouloir continuer? (y/N):"
     read -r choice
 
     if [[ ! "$choice" =~ [Yy] ]]; then
-      error "Installation aborted!"
+      error "Installation interrompue !"
       exit 1
     fi
   fi
@@ -437,7 +437,7 @@ check_os_x86_64() {
 
 # wings virtualization check
 check_virt() {
-  output "Installing virt-what..."
+  output "Installation de virt-what..."
 
   update_repos true
   install_packages "virt-what" true
@@ -449,30 +449,30 @@ check_virt() {
 
   case "$virt_serv" in
   *openvz* | *lxc*)
-    warning "Unsupported type of virtualization detected. Please consult with your hosting provider whether your server can run Docker or not. Proceed at your own risk."
-    echo -e -n "* Are you sure you want to proceed? (y/N): "
+    warning "Type de virtualisation non pris en charge détecté. Veuillez consulter votre fournisseur d'hébergement pour savoir si votre serveur peut exécuter Docker ou non. Procédez à vos risques et périls."
+    echo -e -n "* Êtes-vous sur de vouloir continuer? (y/N): "
     read -r CONFIRM_PROCEED
     if [[ ! "$CONFIRM_PROCEED" =~ [Yy] ]]; then
-      error "Installation aborted!"
+      error "Installation interrompue !"
       exit 1
     fi
     ;;
   *)
-    [ "$virt_serv" != "" ] && warning "Virtualization: $virt_serv detected."
+    [ "$virt_serv" != "" ] && warning "Virtualisation: $virt_serv détecté."
     ;;
   esac
 
   if uname -r | grep -q "xxxx"; then
-    error "Unsupported kernel detected."
+    error "Kernel non pris en charge détecté."
     exit 1
   fi
 
-  success "System is compatible with docker"
+  success "Le système est compatible avec docker"
 }
 
 # Exit with error status code if user is not root
 if [[ $EUID -ne 0 ]]; then
-  error "This script must be executed with root privileges."
+  error "Ce script doit être exécuté avec les privilèges root."
   exit 1
 fi
 
@@ -521,7 +521,7 @@ arm64 | aarch64)
   ARCH=arm64
   ;;
 *)
-  error "Only x86_64 and arm64 are supported!"
+  error "Seuls x86_64 et arm64 sont pris en charge !"
   exit 1
   ;;
 esac
@@ -549,7 +549,7 @@ esac
 
 # exit if not supported
 if [ "$SUPPORTED" == false ]; then
-  output "$OS $OS_VER is not supported"
-  error "Unsupported OS"
+  output "$OS $OS_VER n'est pas pris en charge"
+  error "Système d'exploitation non pris en charge"
   exit 1
 fi
